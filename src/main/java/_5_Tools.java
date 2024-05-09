@@ -24,6 +24,7 @@ public class _5_Tools {
     // 1. Define tools
     static class UserInformationRetriever {
 
+        @Tool("retrieve the user name from his email address")
         String getUserNameFromEmail(String email) {
             // For illustration purpose we print the call to console
             System.out.println("Called getUserNameFromEmail() with email address='" + email + "'");
@@ -31,6 +32,7 @@ public class _5_Tools {
             return "Darth Vader";
         }
 
+        @Tool("retrieve the last level player completed based on their email address")
         int lastCompletedGameLevel(String email) {
             System.out.println("Called lastCompletedGameLevel with email address =" + email);
             // Return a dummy for illustration purpose
@@ -47,12 +49,18 @@ public class _5_Tools {
 
     public static void main(String[] args) {
 
-        ChatLanguageModel model = OpenAiChatModel.withApiKey(ApiKeys.OPENAI_API_KEY);
+        ChatLanguageModel model = OpenAiChatModel.builder()
+        .apiKey(ApiKeys.OPENAI_API_KEY)
+        .logRequests(true)
+        .logResponses(true)
+        .build();
+
         ChatMemory chatMemory = MessageWindowChatMemory.withMaxMessages(10);
 
         GamingBot gamingBot = AiServices.builder(GamingBot.class)
                 .chatLanguageModel(model)
                 .chatMemory(chatMemory)
+                .tools(new UserInformationRetriever())
                 .build();
 
         String answer = gamingBot.chat("vader@hotmail.com","What should I do next?");
