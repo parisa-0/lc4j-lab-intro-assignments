@@ -2,6 +2,7 @@
 import dev.langchain4j.data.image.Image;
 import dev.langchain4j.model.image.ImageModel;
 import dev.langchain4j.model.openai.OpenAiImageModel;
+import dev.langchain4j.model.openai.OpenAiImageModelName;
 import dev.langchain4j.model.output.Response;
 
 import java.net.URISyntaxException;
@@ -21,9 +22,12 @@ public class _2_ImageGeneration {
         //      - generate and inspect your image
         public static void main(String[] args) {
 
-            ImageModel model = null;
+            ImageModel model = OpenAiImageModel.builder()
+            .apiKey(ApiKeys.OPENAI_API_KEY)
+            .modelName(OpenAiImageModelName.DALL_E_2)
+            .build();
 
-            Response<Image> response = null;
+            Response<Image> response = model.generate("two very cute cats, from heaven, not from hell");
             System.out.println(response.content().url());
         }
     }
@@ -40,7 +44,10 @@ public class _2_ImageGeneration {
             //      - generate your image and persist it to src/main/rsources/result-images
             //      (use builder with .persistTo( ... ) )
 
-            ImageModel model = null;
+            ImageModel model = OpenAiImageModel.builder()
+            .modelName(OpenAiImageModelName.DALL_E_2)
+            .persistTo(Paths.get("src/main/resources/result-images"))
+            .build();
 
             Response<Image> response = model.generate("2 funny cats");
 
