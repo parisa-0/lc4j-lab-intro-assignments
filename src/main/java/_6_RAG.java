@@ -89,6 +89,7 @@ public class _6_RAG {
         CoderAgent coderAgent = AiServices.builder(CoderAgent.class)
                                 .chatMemory(memory)
                                 .chatLanguageModel(model)
+                                .contentRetriever(retrievergeneragit)
                                 .build();
 
         consoleInteraction(coderAgent);
