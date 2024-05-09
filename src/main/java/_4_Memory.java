@@ -40,20 +40,21 @@ public class _4_Memory {
         public static void main(String[] args) {
 
             // 2. Create ChatMemory
-            ChatMemory chatMemory = null;
+            ChatMemory chatMemory = MessageWindowChatMemory.withMaxMessages(10);
             // 3. Create model
             ChatLanguageModel model = OpenAiChatModel.withApiKey(ApiKeys.OPENAI_API_KEY);
 
             // 4. Generate AIService with memory and model
             Assistant assistant = AiServices.builder(Assistant.class)
                     .chatLanguageModel(model)
+                    .chatMemory(chatMemory)
                     .build();
 
             // 5. Use AIService with memory
-            String answer = null;
+            String answer = assistant.chat("My name is Jane Doe");
             System.out.println(answer);
 
-            String answerWithName = null;
+            String answerWithName = assistant.chat("what is my name");
             System.out.println(answerWithName);
         }
     }
@@ -78,7 +79,7 @@ public class _4_Memory {
 
             // 1. Initialize ChatMemory with token limiter
             Tokenizer tokenizer = new OpenAiTokenizer("gpt-3.5-turbo");
-            ChatMemory chatMemory = null;
+            ChatMemory chatMemory = TokenWindowChatMemory.withMaxTokens(200, tokenizer);
 
             // 2. Add SystemMessage to instruct the model how to behave
             SystemMessage systemMessage = SystemMessage.from(
@@ -97,10 +98,11 @@ public class _4_Memory {
             // 4. Generate AIService with memory and model
             AIServiceWithMemory.Assistant assistant = AiServices.builder(AIServiceWithMemory.Assistant.class)
                     .chatLanguageModel(model)
+                    .chatMemory(chatMemory)
                     .build();
 
             // 5. Use AIService with few-shot memory
-            String answer = assistant.chat("your question");
+            String answer = assistant.chat("the screen breaks really easily");
             System.out.print(answer);
         }
 
