@@ -33,13 +33,18 @@ public class _3_AiServices {
 
         // 1. AIService interface declaration
 
+        interface Assistant {
+            String chat(String message);
+        }
+
         public static void main(String[] args) {
             // 2. Create AIService
 
+            Assistant assistant = AiServices.create(Assistant.class, model);
 
             // 3. Use AIService
             String userMessage = "Translate 'Plus-Values des cessions de valeurs mobilières, de droits sociaux et gains assimilés'";
-            String answer = null;
+            String answer = assistant.chat(userMessage);
             System.out.println(answer);
         }
     }
@@ -58,19 +63,26 @@ public class _3_AiServices {
 
         // 1. AIService interface declaration
         interface TextUtils {
+            @SystemMessage("You are a translator into {{language}}")
+            @UserMessage("Translate the following text: {{text}}")
+            String translate(@V("text")String text, @V("language")String language);
 
+            @SystemMessage("summarize the user message in {{n}} bullet points")
+            List<String> sumamrize(String text, @V("n") int n);
 
+            @SystemMessage("Extract date and time from the users message")
+            LocalDateTime extractDateTimeFrom(@UserMessage String text, )
         }
 
         public static void main(String[] args) {
 
             // 2. Create AIService
-            TextUtils utils = null;
+            TextUtils utils = AiServices.create(TextUtils.class, model);
 
             // 3. Use AIService
             // Try out translator service (uncomment)
-            // String translation = utils.translate("Hello, how are you?", "italian");
-            // System.out.println(translation);
+             String translation = utils.translate("Hello, how are you?", "italian");
+             System.out.println(translation);
 
             String text = "AI, or artificial intelligence, is a branch of computer science that aims to create "
                     + "machines that mimic human intelligence. This can range from simple tasks such as recognizing "
@@ -84,6 +96,9 @@ public class _3_AiServices {
             text = "The tranquility pervaded the evening of 1968, just fifteen minutes shy of midnight,"
                     + " following the celebrations of Independence Day.";
             // LocalDateTime dateTime = utils.extractDateTimeFrom(text);
+
+            LocalDateTime dateTime = utils.extractDateTimeFrom(text);
+            System.out.println(dateTime);
             // System.out.println(dateTime);
         }
     }
@@ -104,8 +119,10 @@ public class _3_AiServices {
             @Description("short title, 3 words maximum")
             private String title;
 
+            @Description("short description of 6 to 8 words")
             private String description;
 
+            @Description("maximum 8 steps, not too detailed")
             private List<String> steps;
 
             private Integer preparationTimeMinutes;
@@ -133,7 +150,7 @@ public class _3_AiServices {
 
             // 4. Use AIService
 
-            Recipe recipe = chef.createRecipeFrom();
+            Recipe recipe = chef.createRecipeFrom("apple", "feta", "lettuce", "old leftover rice");
 
             System.out.println(recipe);
         }
