@@ -3,6 +3,7 @@ import dev.langchain4j.model.StreamingResponseHandler;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.chat.StreamingChatLanguageModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
+import dev.langchain4j.model.openai.OpenAiChatModelName;
 import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
 
 import java.time.Duration;
@@ -19,8 +20,8 @@ public class _1_TextGeneration {
             //      - create a ChatLanguageModel of type OpenAi
             //      - set your key
             //      - generate an answer based on your input and print to console
-            ChatLanguageModel model = null;
-            String answer = null;
+            ChatLanguageModel model = OpenAiChatModel.withApiKey(ApiKeys.OPENAI_API_KEY);
+            String answer = "How long is river nile";
             System.out.println("Answer A: " + answer);
 
             // LangChain4j has many more integrations with model providers, such as Gemini (Google Vertex) and Mistral AI
@@ -38,9 +39,15 @@ public class _1_TextGeneration {
                 //      - create another ChatLanguageModel of type OpenAi
                 //      - set your key, some model parameters and set logging on for requests and responses
                 //      - generate an answer based on your input and print to console
-                ChatLanguageModel model = null;
+                ChatLanguageModel model = OpenAiChatModel.builder()
+                .apiKey(ApiKeys.OPENAI_API_KEY)
+                .modelName(OpenAiChatModelName.GPT_3_5_TURBO)
+                .logResponses(true)
+                .logRequests(true)
+                .temperature(0.1)
+                .build();
 
-                String answer = null;
+                String answer = "how long is the river nile";
                 System.out.println("Answer B: " + answer);
 
                 // Parameter settings depend on the model, and can usually be found on the model provider's website
@@ -57,10 +64,10 @@ public class _1_TextGeneration {
                 // assignment:
                 //      - create a StreamingChatLanguageModel of type OpenAi
                 //      - write an answer to the console and observe how it is rendered token per token
-                StreamingChatLanguageModel model = null;
+                StreamingChatLanguageModel model = OpenAiStreamingChatModel.withApiKey(ApiKeys.OPENAI_API_KEY);
                 System.out.println("Answer C: ");
 
-                model.generate("your prompt"
+                model.generate("write a poem about devoxxuk"
                         , new StreamingResponseHandler<AiMessage>() {
                             @Override
                             public void onNext(String s) {
